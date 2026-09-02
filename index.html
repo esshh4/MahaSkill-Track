@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MahaSkillTrack — Track Maharashtra skill-development outcomes from training to employment">
+    <title>MahaSkillTrack — Skill Training Outcome Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>MahaSkillTrack</h1>
+                <button class="mobile-close" id="mobileSidebarClose">&times;</button>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <!-- Nav items populated by JavaScript -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="userInfo"></div>
+                <button class="btn-logout" id="btnLogout" style="display: none;">Sign Out</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+                <div class="header-right">
+                    <div id="headerInfo"></div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content-wrapper">
+                <!-- Landing Page -->
+                <div id="page-landing" class="page">
+                    <section class="hero">
+                        <div class="hero-content">
+                            <h1>MahaSkillTrack</h1>
+                            <p>Skill Training Outcome Intelligence</p>
+                            <p class="hero-subtitle">Track Maharashtra skill-development outcomes from training to employment: placement, retention, salary growth and skill gaps in one platform.</p>
+                            <button class="btn-primary" onclick="app.navigate('login')">Sign In</button>
+                        </div>
+                    </section>
+
+                    <section class="features">
+                        <h2>Key Features</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <h3>Track</h3>
+                                <p>Follow every trainee from enrollment and certification through to employment, self-employment or apprenticeship.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Measure</h3>
+                                <p>Measure placement, 3/6/12-month retention, salary growth and satisfaction with verified follow-up data.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Analyze</h3>
+                                <p>Identify skill gaps and course-provider performance with district-level analytics and multi-year cohort views.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Verify</h3>
+                                <p>Ensure data integrity with role-based access, telephonic follow-ups, and employer verification workflows.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Report</h3>
+                                <p>Generate reports on placement, retention and salary outcomes with exportable data for program review.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Comply</h3>
+                                <p>Respect trainee consent preferences and deliver only privacy-safe, anonymised analytics and insights.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Login Page -->
+                <div id="page-login" class="page" style="display: none;">
+                    <div class="login-container">
+                        <div class="login-card">
+                            <h2>Sign In to MahaSkillTrack</h2>
+                            <form id="loginForm" onsubmit="app.handleLogin(event)">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="emailInput" required placeholder="admin@mahaskill.demo">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="passwordInput" required placeholder="demo1234">
+                                </div>
+                                <button type="submit" class="btn-primary">Sign In</button>
+                            </form>
+                            <div class="demo-users">
+                                <h3>Demo Accounts</h3>
+                                <div class="demo-account" onclick="app.quickLogin('admin@mahaskill.demo', 'demo1234')">
+                                    <strong>Admin</strong>
+                                    <small>admin@mahaskill.demo / demo1234</small>
+                                </div>
+                                <div class="demo-account" onclick="app.quickLogin('provider@mahaskill.demo', 'demo1234')">
+                                    <strong>Provider</strong>
+                                    <small>provider@mahaskill.demo / demo1234</small>
+                                </div>
+                                <div class="demo-account" onclick="app.quickLogin('trainee@mahaskill.demo', 'demo1234')">
+                                    <strong>Trainee</strong>
+                                    <small>trainee@mahaskill.demo / demo1234</small>
+                                </div>
+                                <div class="demo-account" onclick="app.quickLogin('employer@mahaskill.demo', 'demo1234')">
+                                    <strong>Employer</strong>
+                                    <small>employer@mahaskill.demo / demo1234</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1 id="dashboardTitle">Dashboard</h1>
+                        <p id="dashboardSubtitle"></p>
+                    </div>
+                    <div class="filters" id="filterBar"></div>
+                    <div class="stats-grid" id="statsContainer"></div>
+                    <div class="charts-grid" id="chartsContainer"></div>
+                    <div class="notifications" id="notificationsContainer"></div>
+                </div>
+
+                <!-- Trainees Page -->
+                <div id="page-trainees" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Trainee Registry</h1>
+                        <p id="traineesSubtitle"></p>
+                    </div>
+                    <div class="filters">
+                        <input type="text" id="traineesSearch" placeholder="Search by name, ID or district..." class="search-input">
+                        <button class="btn-secondary" id="btnExportTrainees">Export CSV</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>ID</th>
+                                    <th>Course</th>
+                                    <th>Training Status</th>
+                                    <th>Employment Status</th>
+                                    <th>Salary</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="traineesTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Trainee Detail Page -->
+                <div id="page-trainee-detail" class="page" style="display: none;">
+                    <div id="traineeDetailContent"></div>
+                </div>
+
+                <!-- Programs Page -->
+                <div id="page-programs" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Vocational Programs</h1>
+                        <p>Courses offered across Maharashtra skill training centers</p>
+                    </div>
+                    <div class="cards-grid" id="programsContainer"></div>
+                </div>
+
+                <!-- Providers Page -->
+                <div id="page-providers" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Training Providers</h1>
+                        <p>Partner institutes offering vocational training programs</p>
+                    </div>
+                    <div class="cards-grid" id="providersContainer"></div>
+                </div>
+
+                <!-- Employers Page -->
+                <div id="page-employers" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Employer Network</h1>
+                        <p>Partner employers hiring skilled trainees</p>
+                    </div>
+                    <div class="cards-grid" id="employersContainer"></div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="page-reports" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Reports</h1>
+                        <p>Export trainee data and generate reports</p>
+                    </div>
+                    <div class="report-options">
+                        <div class="report-card">
+                            <h3>Trainee Registry Export</h3>
+                            <p>Download all trainee records with training and employment data</p>
+                            <button class="btn-primary" onclick="app.exportTraineeData()">Export CSV</button>
+                        </div>
+                        <div class="report-card">
+                            <h3>Outcome Summary</h3>
+                            <p>Summary statistics on placement, retention and salary outcomes</p>
+                            <button class="btn-primary" onclick="app.exportOutcomeData()">Generate Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follow-ups Page -->
+                <div id="page-followups" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Follow-up Tracker</h1>
+                        <p>3, 6 and 12-month milestone check-ins</p>
+                    </div>
+                    <div class="followup-tabs">
+                        <button class="tab-button active" onclick="app.switchFollowupTab('due')">Due</button>
+                        <button class="tab-button" onclick="app.switchFollowupTab('pending')">Pending</button>
+                        <button class="tab-button" onclick="app.switchFollowupTab('completed')">Completed</button>
+                    </div>
+                    <div id="followupContent" class="table-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Outcomes Page -->
+                <div id="page-outcomes" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Employment Outcomes</h1>
+                        <p>Record and review placement outcomes</p>
+                    </div>
+                    <div class="filters">
+                        <input type="text" id="outcomesSearch" placeholder="Search trainees..." class="search-input">
+                    </div>
+                    <div id="outcomesContent" class="table-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="page-analytics" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Analytics</h1>
+                        <p>Cross-cutting analysis on outcomes by district, course and provider</p>
+                    </div>
+                    <div class="analytics-content" id="analyticsContent"></div>
+                </div>
+
+                <!-- Skill Gaps Page -->
+                <div id="page-skillgaps" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Skill Gaps Analysis</h1>
+                        <p>Skills in demand vs skills covered in training</p>
+                    </div>
+                    <div class="skills-table" id="skillsContent"></div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="page-settings" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Settings</h1>
+                        <p>Account and application settings</p>
+                    </div>
+                    <div class="settings-content" id="settingsContent"></div>
+                </div>
+
+                <!-- Consent Page -->
+                <div id="page-consent" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h1>Consent & Privacy</h1>
+                        <p>Outcome tracking runs only on the data trainees have agreed to share</p>
+                    </div>
+                    <div id="consentContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
